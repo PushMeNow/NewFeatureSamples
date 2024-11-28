@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guard.Statics", "Guard.Statics\Guard.Statics.csproj", "{9512DA91-9B46-4935-8707-7470111CFCE2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GuardSamples", "GuardSamples", "{DF4201AF-C13E-4F56-9FF1-02C4051C0C5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Guard.Exceptions", "Guard.Exceptions\Guard.Exceptions.csproj", "{3425A183-7211-4E63-A2FA-13F07B566C01}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9512DA91-9B46-4935-8707-7470111CFCE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9512DA91-9B46-4935-8707-7470111CFCE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9512DA91-9B46-4935-8707-7470111CFCE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9512DA91-9B46-4935-8707-7470111CFCE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3425A183-7211-4E63-A2FA-13F07B566C01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3425A183-7211-4E63-A2FA-13F07B566C01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3425A183-7211-4E63-A2FA-13F07B566C01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3425A183-7211-4E63-A2FA-13F07B566C01}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9512DA91-9B46-4935-8707-7470111CFCE2} = {DF4201AF-C13E-4F56-9FF1-02C4051C0C5D}
+		{3425A183-7211-4E63-A2FA-13F07B566C01} = {DF4201AF-C13E-4F56-9FF1-02C4051C0C5D}
+	EndGlobalSection
+EndGlobal
