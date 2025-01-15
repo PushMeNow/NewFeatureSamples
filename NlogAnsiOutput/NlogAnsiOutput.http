@@ -1,0 +1,6 @@
+@NlogAnsiOutput_HostAddress = http://localhost:5236
+
+GET {{NlogAnsiOutput_HostAddress}}/api/nlog-output/
+Accept: application/json
+
+###
