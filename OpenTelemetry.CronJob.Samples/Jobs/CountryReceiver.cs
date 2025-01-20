@@ -1,8 +1,6 @@
-﻿using OpenTelemetry.Instrumentation.BackgroundService;
+﻿namespace OpenTelemetry.CronJob.Sample.Jobs;
 
-namespace OpenTelemetry.CronJob.Sample.Jobs;
-
-internal sealed class CountryReceiver : CustomBackgroundService
+internal sealed class CountryReceiver : Instrumentation.BackgroundService.WorkerService
 {
 	private readonly ILogger<CountryReceiver> _logger;
 	private readonly HttpClient _httpClient;
@@ -16,7 +14,7 @@ internal sealed class CountryReceiver : CustomBackgroundService
 		_httpClient.BaseAddress = new Uri("https://api.country.is/");
 	}
 
-	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+	protected override async Task Execute(CancellationToken stoppingToken)
 	{
 		var country = await _httpClient.GetFromJsonAsync<Country>("", cancellationToken: stoppingToken);
 
