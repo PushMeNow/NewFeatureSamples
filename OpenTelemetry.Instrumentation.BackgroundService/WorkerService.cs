@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using OpenTelemetry.Trace;
 using Exception = System.Exception;
 
 namespace OpenTelemetry.Instrumentation.BackgroundService;
@@ -25,6 +26,7 @@ public abstract class WorkerService : Microsoft.Extensions.Hosting.BackgroundSer
 		catch (Exception ex)
 		{
 			CurrentActivity.SetStatus(ActivityStatusCode.Error, ex.Message);
+			CurrentActivity.RecordException(ex);
 		}
 		finally
 		{
