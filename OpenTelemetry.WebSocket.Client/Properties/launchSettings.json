@@ -1,0 +1,14 @@
+﻿{
+	"$schema": "https://json.schemastore.org/launchsettings.json",
+	"profiles": {
+		"OpenTelemetry.WebSocket.Client": {
+			"commandName": "Project",
+			"dotnetRunMessages": true,
+			"applicationUrl": "http://localhost:5201",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Development",
+				"WebSocket_Server_Domain": "localhost:5100"
+			}
+		}
+	}
+}

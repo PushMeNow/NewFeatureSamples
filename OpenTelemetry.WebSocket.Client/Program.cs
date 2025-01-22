@@ -1,5 +1,5 @@
 using Counties.Client;
-using OpenTelemetry.CronJob.Sample.Jobs;
+using OpenTelemetry.WebSocket.Client;
 using OpenTelemetry.Instrumentation.BackgroundService;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -7,7 +7,7 @@ using OpenTelemetry.Trace;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenTelemetry()
-       .ConfigureResource(config => config.AddService("cron-job-runner")) // configure current service name
+       .ConfigureResource(config => config.AddService("websocket-client")) // configure current service name
        .WithTracing(config =>
                     {
 	                    // trace exporter to otpl server (example grafana-tempo)
@@ -27,9 +27,9 @@ builder.Services.AddOpenTelemetry()
 	                    config.AddHostedServiceInstrumentation();
                     });
 
-builder.Services.AddHostedService<CountryReceiver>();
-
 builder.Services.AddCountiesClient();
+
+builder.Services.AddHostedService<WebSocketWorker>();
 
 var app = builder.Build();
 
