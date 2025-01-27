@@ -1,10 +1,8 @@
-using Counties.Client;
+using Countries.Repositories.Postgres;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -12,7 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddOpenTelemetry()
-       .ConfigureResource(config => config.AddService("http-client")) // configure current service name
+       .ConfigureResource(config => config.AddService(Environment.GetEnvironmentVariable("OTEL_ServiceName")!)) // configure current service name
        .WithTracing(config =>
                     {
 	                    // trace exporter to otpl server (example grafana-tempo)
@@ -23,9 +21,12 @@ builder.Services.AddOpenTelemetry()
 	                    config.AddAspNetCoreInstrumentation(options => { options.RecordException = true; });
 	                    // register traces for http client calls
 	                    config.AddHttpClientInstrumentation(options => { options.RecordException = true; });
+
+	                    // register traces for EF core
+	                    config.AddEntityFrameworkCoreInstrumentation(options => { options.SetDbStatementForText = true; });
                     });
 
-builder.Services.AddCountiesClient();
+builder.Services.AddCountryRepositories(builder.Configuration.GetConnectionString("DefaultConnection")).AddMigrator();
 
 var app = builder.Build();
 

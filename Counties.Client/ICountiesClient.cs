@@ -2,5 +2,5 @@
 
 public interface ICountiesClient
 {
-	Task<Country?> GetCountry(CancellationToken cancellationToken = default);
+	Task<CountryResponse?> GetCountry(CancellationToken cancellationToken = default);
 }

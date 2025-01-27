@@ -1,28 +1,36 @@
 ﻿using Counties.Client;
+using OpenTelemetry.Http.Samples.Client;
+using OpenTelemetry.Http.Samples.Domain;
 
 namespace OpenTelemetry.CronJob.Sample.Jobs;
 
 internal sealed class CountryReceiver : Instrumentation.BackgroundService.WorkerService
 {
-	private readonly ICountiesClient _countiesClient;
-	private readonly ILogger<CountryReceiver> _logger;
-	private readonly IHostApplicationLifetime _applicationLifetime;
+	private readonly IServiceProvider _serviceProvider;
 
-	public CountryReceiver(ICountiesClient countiesClient, ILogger<CountryReceiver> logger, IHostApplicationLifetime applicationLifetime)
+	public CountryReceiver(IServiceProvider serviceProvider)
 	{
-		_countiesClient = countiesClient;
-		_logger = logger;
-		_applicationLifetime = applicationLifetime;
+		_serviceProvider = serviceProvider;
 	}
 
 	protected override async Task Execute(CancellationToken stoppingToken)
 	{
-		var country = await _countiesClient.GetCountry(stoppingToken);
+		using var scope = _serviceProvider.CreateScope();
 
-		_logger.LogInformation("Country received. Value: {Value}", country);
+		var countiesClient = scope.ServiceProvider.GetRequiredService<ICountiesClient>();
+		var logger = scope.ServiceProvider.GetRequiredService<ILogger<CountryReceiver>>();
+		var httpSamplesClient = scope.ServiceProvider.GetRequiredService<IHttpSamplesClient>();
 
-		_applicationLifetime.StopApplication();
+		var country = await countiesClient.GetCountry(stoppingToken);
+
+		var countryHistoryRecord = new CountryHistoryRecordRequest(country!.Ip, country.CountryCode);
+		await httpSamplesClient.WriteHistory(countryHistoryRecord);
+
+		var history = await httpSamplesClient.GetCountyHistory(country!.Ip, country.CountryCode);
+
+		foreach (var record in history)
+		{
+			logger.LogInformation("Current history record: {Record}", record);
+		}
 	}
-
-	private record Country(string Ip, string CountryCode);
 }

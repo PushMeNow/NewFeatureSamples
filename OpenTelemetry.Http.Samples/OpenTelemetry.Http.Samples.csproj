@@ -7,6 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta.8" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
 	</ItemGroup>
 
@@ -20,7 +21,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Counties.Client\Counties.Client.csproj" />
+	  <ProjectReference Include="..\Countries.Repositories.Postgres\Countries.Repositories.Postgres.csproj" />
+	  <ProjectReference Include="..\OpenTelemetry.Http.Samples.Domain\OpenTelemetry.Http.Samples.Domain.csproj" />
 	</ItemGroup>
 
 

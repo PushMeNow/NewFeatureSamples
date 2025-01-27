@@ -33,7 +33,7 @@ public abstract class WorkerService : Microsoft.Extensions.Hosting.BackgroundSer
 
 	protected sealed override async Task ExecuteAsync(CancellationToken stoppingToken)
 	{
-		while (_schedulerOptions != null && stoppingToken.IsCancellationRequested == false)
+		do
 		{
 			CurrentActivity = BackgroundServiceActivitySource.ActivitySource.StartActivity(GetType().Name);
 
@@ -57,8 +57,11 @@ public abstract class WorkerService : Microsoft.Extensions.Hosting.BackgroundSer
 				CurrentActivity = null;
 			}
 
-			await Task.Delay(new TimeSpan(days: 0, hours: 0, minutes: 0, seconds: _schedulerOptions.IntervalSec).Milliseconds, stoppingToken);
-		}
+			if (_schedulerOptions is not null)
+			{
+				await Task.Delay(new TimeSpan(days: 0, hours: 0, minutes: 0, seconds: _schedulerOptions.IntervalSec).Milliseconds, stoppingToken);
+			}
+		} while (_schedulerOptions != null && stoppingToken.IsCancellationRequested == false);
 	}
 
 	public virtual Task Stop(CancellationToken cancellationToken)

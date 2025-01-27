@@ -7,7 +7,8 @@
 			"applicationUrl": "http://localhost:5201",
 			"environmentVariables": {
 				"ASPNETCORE_ENVIRONMENT": "Development",
-				"WebSocket_Server_Domain": "localhost:5100"
+				"WebSocket_Server_Domain": "localhost:5100",
+				"OTEL_ServiceName": "websocket-client"
 			}
 		}
 	}

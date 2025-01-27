@@ -7,7 +7,7 @@ using OpenTelemetry.Trace;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenTelemetry()
-       .ConfigureResource(config => config.AddService("websocket-client")) // configure current service name
+       .ConfigureResource(config => config.AddService(Environment.GetEnvironmentVariable("OTEL_ServiceName")!)) // configure current service name
        .WithTracing(config =>
                     {
 	                    // trace exporter to otpl server (example grafana-tempo)

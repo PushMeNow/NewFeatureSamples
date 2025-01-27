@@ -15,6 +15,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Counties.Client\Counties.Client.csproj" />
+      <ProjectReference Include="..\Countries.Repositories.Postgres\Countries.Repositories.Postgres.csproj" />
       <ProjectReference Include="..\OpenTelemetry.Instrumentation.BackgroundService\OpenTelemetry.Instrumentation.BackgroundService.csproj" />
     </ItemGroup>
 

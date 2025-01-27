@@ -13,8 +13,8 @@ internal sealed class CountriesClient : ICountiesClient
 
 	}
 
-	public Task<Country?> GetCountry(CancellationToken cancellationToken = default)
+	public Task<CountryResponse?> GetCountry(CancellationToken cancellationToken = default)
 	{
-		return _httpClient.GetFromJsonAsync<Country>("", cancellationToken);
+		return _httpClient.GetFromJsonAsync<CountryResponse>("", cancellationToken);
 	}
 }
