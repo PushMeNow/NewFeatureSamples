@@ -1,0 +1,16 @@
+﻿{
+	"$schema": "https://json.schemastore.org/launchsettings.json",
+	"profiles": {
+		"OpenTelemetry.Http.Samples": {
+			"commandName": "Project",
+			"dotnetRunMessages": true,
+			"launchBrowser": false,
+			"launchUrl": "swagger",
+			"applicationUrl": "http://localhost:5106",
+			"environmentVariables": {
+				"ASPNETCORE_ENVIRONMENT": "Development",
+				"OTEL_SERVICE_NAME": "http-client"
+			}
+		}
+	}
+}

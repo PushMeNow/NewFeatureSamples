@@ -1,0 +1,107 @@
+#version: '3.9'
+name: common-env
+
+networks:
+    common-network:
+    promtail-loki:
+        internal: true
+    grafana-loki:
+        internal: true
+    grafana-prometheus:
+        internal: true
+    prometheus-cadvisor:
+        internal: true
+    grafana-tempo:
+        internal: true
+    prometheus-tempo:
+        internal: true
+
+services:
+    # service to store logs
+    loki:
+        image: grafana/loki
+        container_name: loki
+        command: -config.file=/etc/loki/local-config.yaml
+        networks:
+            - grafana-loki
+            - promtail-loki
+
+    # service to scrap logs from external services
+    promtail:
+        depends_on:
+            - loki
+        image: grafana/promtail
+        container_name: promtail
+        volumes:
+            - ./logs:/var/log
+            - ./promtail/local-config.yaml:/etc/promtail/local-config.yaml
+        command: "-config.file=/etc/promtail/local-config.yaml"
+        networks:
+            - promtail-loki
+
+    # service to scrap and store metrics of external services
+    prometheus:
+        image: prom/prometheus
+        container_name: prometheus
+        ports:
+            - "9090:9090"
+        volumes:
+            - ./prometheus:/app.cfg
+        networks:
+            - common-network
+            - prometheus-cadvisor
+            - grafana-prometheus
+            - prometheus-tempo
+        command:
+            --config.file=/app.cfg/prometheus.yml
+            --storage.tsdb.path=/prometheus
+            --web.console.libraries=/usr/share/prometheus/console_libraries
+            --web.console.templates=/usr/share/prometheus/consoles
+
+    # service to visualize, analyze and manage metrics, traces and logs
+    grafana:
+        depends_on:
+            - loki
+        image: grafana/grafana
+        container_name: grafana
+        ports:
+            - "3000:3000"
+        environment:
+            GF_SECURITY_ADMIN_USER: admin
+            GF_SECURITY_ADMIN_PASSWORD: test
+        volumes:
+            - ./grafana/provisioning:/etc/grafana/provisioning
+            - ./grafana/dashboards:/etc/grafana/dashboards
+        networks:
+            - common-network
+            - grafana-loki
+            - grafana-prometheus
+            - grafana-tempo
+
+    init: # init compose for Tempo
+        image: &tempoImage grafana/tempo:latest
+        user: root
+        entrypoint:
+            - "chown"
+            - "10001:10001"
+            - "/var/tempo"
+        volumes:
+            - ./tempo/tempo-data:/var/tempo
+
+    # service to store and visualize traces
+    tempo:
+        image: *tempoImage
+        container_name: tempo
+        command: [ "-config.file=/etc/tempo.yaml" ]
+        volumes:
+            - ./tempo/tempo.yaml:/etc/tempo.yaml
+            - ./tempo/tempo-data:/var/tempo
+        ports:
+            - "3200:3200" # tempo public port
+            - "4317:4317" # tempo otpl grpc port
+        depends_on:
+            - init
+        networks:
+            - grafana-tempo
+            - prometheus-tempo
+            - common-network

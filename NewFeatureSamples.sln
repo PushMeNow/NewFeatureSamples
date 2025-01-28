@@ -22,31 +22,31 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflow", "Workflow", "{AD
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenTelemetry", "OpenTelemetry", "{966E2CD3-C3E4-4D82-8E75-CC2070E71C69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTelemetry.CronJob.Samples", "OpenTelemetry.CronJob.Samples\OpenTelemetry.CronJob.Samples.csproj", "{0118CC28-5CBA-45E8-ABDC-E7EA9F73D963}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTelemetry.CronJob.Samples", "OpenTelemetry\OpenTelemetry.CronJob.Samples\OpenTelemetry.CronJob.Samples.csproj", "{0118CC28-5CBA-45E8-ABDC-E7EA9F73D963}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTelemetry.Instrumentation.BackgroundService", "OpenTelemetry.Instrumentation.BackgroundService\OpenTelemetry.Instrumentation.BackgroundService.csproj", "{B33B2B4C-BC7D-4BF2-93FF-1FB72A9ACE26}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTelemetry.Instrumentation.BackgroundService", "OpenTelemetry\OpenTelemetry.Instrumentation.BackgroundService\OpenTelemetry.Instrumentation.BackgroundService.csproj", "{B33B2B4C-BC7D-4BF2-93FF-1FB72A9ACE26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTelemetry.Shared", "OpenTelemetry.Shared\OpenTelemetry.Shared.csproj", "{4483B1C2-E055-4A1A-BF49-8599D39BA14F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTelemetry.Shared", "OpenTelemetry\OpenTelemetry.Shared\OpenTelemetry.Shared.csproj", "{4483B1C2-E055-4A1A-BF49-8599D39BA14F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTelemetry.WebSocket.Client", "OpenTelemetry.WebSocket.Client\OpenTelemetry.WebSocket.Client.csproj", "{B0A803A9-5584-4050-BADD-A3EA1620E7CA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTelemetry.WebSocket.Client", "OpenTelemetry\WebSockets\OpenTelemetry.WebSocket.Client\OpenTelemetry.WebSocket.Client.csproj", "{B0A803A9-5584-4050-BADD-A3EA1620E7CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTelemetry.WebSocket.Server", "OpenTelemetry.WebSocket.Server\OpenTelemetry.WebSocket.Server.csproj", "{1EBCF45D-29D7-4D57-95C4-F468B36B4B6D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTelemetry.WebSocket.Server", "OpenTelemetry\WebSockets\OpenTelemetry.WebSocket.Server\OpenTelemetry.WebSocket.Server.csproj", "{1EBCF45D-29D7-4D57-95C4-F468B36B4B6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTelemetry.Http.Samples", "OpenTelemetry.Http.Samples\OpenTelemetry.Http.Samples.csproj", "{5E9C4E3D-78DC-4645-9D7D-6EA391F011D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTelemetry.Http.Samples", "OpenTelemetry\Http.Samples\OpenTelemetry.Http.Samples\OpenTelemetry.Http.Samples.csproj", "{5E9C4E3D-78DC-4645-9D7D-6EA391F011D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Counties.Client", "Counties.Client\Counties.Client.csproj", "{CC234CF9-97E9-4416-95BE-DE158A0CFE89}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Countries.Repositories.Postgres", "OpenTelemetry\Http.Samples\Countries.Repositories.Postgres\Countries.Repositories.Postgres.csproj", "{727935D4-DB4B-4306-8D5E-6E4F04B8F941}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Countries.Repositories.Postgres", "Countries.Repositories.Postgres\Countries.Repositories.Postgres.csproj", "{727935D4-DB4B-4306-8D5E-6E4F04B8F941}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTelemetry.Http.Samples.Client", "OpenTelemetry\Http.Samples\OpenTelemetry.Http.Samples.Client\OpenTelemetry.Http.Samples.Client.csproj", "{BF013CC7-A097-41DC-B1E0-A5A5CFCD4326}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTelemetry.Http.Samples.Client", "OpenTelemetry.Http.Samples.Client\OpenTelemetry.Http.Samples.Client.csproj", "{BF013CC7-A097-41DC-B1E0-A5A5CFCD4326}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTelemetry.Http.Samples.Domain", "OpenTelemetry.Http.Samples.Domain\OpenTelemetry.Http.Samples.Domain.csproj", "{098DFC82-C849-4752-92A1-DE72D9EB2252}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTelemetry.Http.Samples.Domain", "OpenTelemetry\Http.Samples\OpenTelemetry.Http.Samples.Domain\OpenTelemetry.Http.Samples.Domain.csproj", "{098DFC82-C849-4752-92A1-DE72D9EB2252}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Http.Samples", "Http.Samples", "{E6802262-9DCE-4266-A795-2C929AC95086}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdParty", "ThirdParty", "{6C4E738E-3090-44F8-BB1E-10DA493B8A88}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebSockets", "WebSockets", "{4294DE15-B7DE-4CFD-AC17-F0661427788F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Counties.Client", "OpenTelemetry\ThirdParty\Counties.Client\Counties.Client.csproj", "{9F0BA8DB-9D24-45D7-8EE0-DB6A25C471E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,10 +94,6 @@ Global
 		{5E9C4E3D-78DC-4645-9D7D-6EA391F011D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E9C4E3D-78DC-4645-9D7D-6EA391F011D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E9C4E3D-78DC-4645-9D7D-6EA391F011D9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CC234CF9-97E9-4416-95BE-DE158A0CFE89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC234CF9-97E9-4416-95BE-DE158A0CFE89}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CC234CF9-97E9-4416-95BE-DE158A0CFE89}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CC234CF9-97E9-4416-95BE-DE158A0CFE89}.Release|Any CPU.Build.0 = Release|Any CPU
 		{727935D4-DB4B-4306-8D5E-6E4F04B8F941}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{727935D4-DB4B-4306-8D5E-6E4F04B8F941}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{727935D4-DB4B-4306-8D5E-6E4F04B8F941}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -110,6 +106,10 @@ Global
 		{098DFC82-C849-4752-92A1-DE72D9EB2252}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{098DFC82-C849-4752-92A1-DE72D9EB2252}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{098DFC82-C849-4752-92A1-DE72D9EB2252}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F0BA8DB-9D24-45D7-8EE0-DB6A25C471E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F0BA8DB-9D24-45D7-8EE0-DB6A25C471E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F0BA8DB-9D24-45D7-8EE0-DB6A25C471E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F0BA8DB-9D24-45D7-8EE0-DB6A25C471E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9512DA91-9B46-4935-8707-7470111CFCE2} = {DF4201AF-C13E-4F56-9FF1-02C4051C0C5D}
@@ -125,9 +125,9 @@ Global
 		{098DFC82-C849-4752-92A1-DE72D9EB2252} = {E6802262-9DCE-4266-A795-2C929AC95086}
 		{727935D4-DB4B-4306-8D5E-6E4F04B8F941} = {E6802262-9DCE-4266-A795-2C929AC95086}
 		{6C4E738E-3090-44F8-BB1E-10DA493B8A88} = {966E2CD3-C3E4-4D82-8E75-CC2070E71C69}
-		{CC234CF9-97E9-4416-95BE-DE158A0CFE89} = {6C4E738E-3090-44F8-BB1E-10DA493B8A88}
 		{4294DE15-B7DE-4CFD-AC17-F0661427788F} = {966E2CD3-C3E4-4D82-8E75-CC2070E71C69}
 		{B0A803A9-5584-4050-BADD-A3EA1620E7CA} = {4294DE15-B7DE-4CFD-AC17-F0661427788F}
 		{1EBCF45D-29D7-4D57-95C4-F468B36B4B6D} = {4294DE15-B7DE-4CFD-AC17-F0661427788F}
+		{9F0BA8DB-9D24-45D7-8EE0-DB6A25C471E9} = {6C4E738E-3090-44F8-BB1E-10DA493B8A88}
 	EndGlobalSection
 EndGlobal

@@ -6,3 +6,5 @@ vscode/
 .git/
 *.DotSettings.*
 .vs/
+*/tempo/tempo-data
+*/logs/*
