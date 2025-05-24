@@ -24,7 +24,6 @@ scrape_configs:
         trace_id: traceId
         time: timestamp
         level: level
-        need_alert: needAlert
         alert_event: alertEvent
         message: message
         logger: logger
@@ -35,20 +34,9 @@ scrape_configs:
       source: timestamp
       format: RFC3339
   - template:
-      source: need_alert
-      template: '{{if .Value }} {{- .Value -}} {{else}} {{- "-" -}} {{end}}'
-  - template:
-      source: alert_event
-      template: '{{if .Value }} {{- .Value -}} {{else}} {{- "-" -}} {{end}}'
-  - template:
       source: output
       template: '{{ ToUpper .level }} | AlertEvent: {{ .alert_event }} | TraceId: {{ .trace_id }} | {{ .message }} | {{ .logger }}'
-  # - output:
-  #     source: output
   - regex:
       expression: 'level": "(?P<level>[a-zA-z]{4,6})"'
   - labels:
       level:
-      need_alert:
-      alert_event:
-

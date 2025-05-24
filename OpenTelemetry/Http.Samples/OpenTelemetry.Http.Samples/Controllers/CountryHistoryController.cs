@@ -7,26 +7,19 @@ namespace OpenTelemetry.Http.Samples.Controllers;
 
 [ApiController]
 [Route("api/countries-history")]
-public sealed class CountryHistoryController : ControllerBase
+public sealed class CountryHistoryController(ICountryRepository countryRepository) : ControllerBase
 {
-	private readonly ICountryRepository _countryRepository;
-
-	public CountryHistoryController(ICountryRepository countryRepository)
-	{
-		_countryRepository = countryRepository;
-	}
-
 	[HttpGet]
 	public async Task<IReadOnlyCollection<CountryHistoryRecordResponse>> GetHistory(string ip, string? countryCode)
 	{
-		var entities = await _countryRepository.GetHistory(ip, countryCode);
+		var entities = await countryRepository.GetHistory(ip, countryCode);
 		return entities.Select(ToResponse).ToArray();
 	}
 
 	[HttpPost]
 	public Task WriteHistory([FromBody] CountryHistoryRecordRequest request)
 	{
-		return _countryRepository.WriteHistory(ToEntity(request));
+		return countryRepository.WriteHistory(ToEntity(request));
 	}
 
 	private CountryHistoryRecordResponse ToResponse(CountryHistoryRecord country)

@@ -4,24 +4,16 @@ using Counties.Client;
 
 namespace OpenTelemetry.WebSocket.Server;
 
-internal sealed class WebSocketMiddleware
+internal sealed class WebSocketMiddleware(
+	RequestDelegate next,
+	ILogger<WebSocketMiddleware> logger,
+	ICountiesClient countiesClient)
 {
-	private readonly RequestDelegate _next;
-	private readonly ILogger<WebSocketMiddleware> _logger;
-	private readonly ICountiesClient _countiesClient;
-
-	public WebSocketMiddleware(RequestDelegate next, ILogger<WebSocketMiddleware> logger, ICountiesClient countiesClient)
-	{
-		_next = next;
-		_logger = logger;
-		_countiesClient = countiesClient;
-	}
-
 	public async Task Invoke(HttpContext httpContext)
 	{
 		if (httpContext.Request.Path != "/ws")
 		{
-			await _next.Invoke(httpContext);
+			await next.Invoke(httpContext);
 		}
 
 		if (httpContext.WebSockets.IsWebSocketRequest == false)
@@ -40,18 +32,18 @@ internal sealed class WebSocketMiddleware
 
 				await Task.Delay(Random.Shared.Next(1000, 3000));
 
-				var country = await _countiesClient.GetCountry();
+				var country = await countiesClient.GetCountry();
 
-				_logger.LogInformation("Json content: {Json}", country);
+				logger.LogInformation("Json content: {Json}", country);
 
-				_logger.LogInformation("Received {RandomInt}", randomInt);
+				logger.LogInformation("Received {RandomInt}", randomInt);
 
 				await socket.SendAsync(Encoding.UTF8.GetBytes(randomInt.ToString()), WebSocketMessageType.Text, true, CancellationToken.None);
 			}
 		}
 		catch (WebSocketException e) when (e.WebSocketErrorCode is WebSocketError.ConnectionClosedPrematurely)
 		{
-			_logger.LogInformation("WebSocket connection closed");
+			logger.LogInformation("WebSocket connection closed");
 		}
 	}
 

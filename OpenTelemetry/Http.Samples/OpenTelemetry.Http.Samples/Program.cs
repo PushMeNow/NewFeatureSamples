@@ -1,18 +1,19 @@
+using Counties.Client;
 using Countries.Repositories.Postgres;
-using OpenTelemetry.Resources;
 using OpenTelemetry.Shared;
-using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+var services = builder.Services;
+services.AddControllers();
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
 
-builder.Services.AddOpenTelemetryForCurrentApplication().WithHttpServerTracing();
+services.AddOpenTelemetryForCurrentApplication().WithHttpServerTracing().WithHttpServerLogging().WithHttpServerMetrics();
 
-builder.Services.AddCountryRepositories(builder.Configuration.GetConnectionString("DefaultConnection")).AddMigrator();
+services.AddCountryRepositories(builder.Configuration.GetConnectionString("DefaultConnection")!).AddMigrator();
+services.AddCountiesClient();
+
 
 var app = builder.Build();
 

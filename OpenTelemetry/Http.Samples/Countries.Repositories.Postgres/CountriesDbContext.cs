@@ -3,12 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Countries.Repositories.Postgres;
 
-internal sealed class CountriesDbContext : DbContext
+internal sealed class CountriesDbContext(DbContextOptions<CountriesDbContext> options) : DbContext(options)
 {
-	public CountriesDbContext(DbContextOptions<CountriesDbContext> options) : base(options)
-	{
-	}
-
 	public DbSet<CountryHistoryRecord> CountryHistoryRecords { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)

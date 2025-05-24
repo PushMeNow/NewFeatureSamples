@@ -1,21 +1,17 @@
 ﻿namespace Countries.Repositories.Postgres.Entities;
 
-public sealed class CountryHistoryRecord
+public sealed class CountryHistoryRecord(
+	string ip,
+	string? countryCode,
+	string serviceName)
 {
-	public CountryHistoryRecord(string ip, string? countryCode, string serviceName)
-	{
-		Ip = ip;
-		CountryCode = countryCode;
-		ServiceName = serviceName;
-	}
-
 	public Guid Id { get; set; }
 
-	public string Ip { get; set; }
+	public string Ip { get; set; } = ip;
 
-	public string? CountryCode { get; set; }
+	public string? CountryCode { get; set; } = countryCode;
 
-	public string ServiceName { get; set; }
+	public string ServiceName { get; set; } = serviceName;
 
 	public DateTime CreatedDate { get; set; }
 }

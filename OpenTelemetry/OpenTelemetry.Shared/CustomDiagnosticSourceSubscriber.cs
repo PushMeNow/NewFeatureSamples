@@ -2,13 +2,14 @@ using System.Diagnostics;
 
 namespace OpenTelemetry.Shared;
 
-public sealed class CustomDiagnosticSourceSubscriber : IDisposable, IObserver<DiagnosticListener>
+public sealed class CustomDiagnosticSourceSubscriber(
+	Func<string, ListenerHandler> handlerFactory,
+	Func<DiagnosticListener, bool> diagnosticSourceFilter,
+	Func<string, object?, object?, bool>? isEnabledFilter,
+	Action<string, string, Exception> logUnknownException)
+	: IDisposable, IObserver<DiagnosticListener>
 {
-	private readonly List<IDisposable> _listenerSubscriptions;
-	private readonly Func<string, ListenerHandler> _handlerFactory;
-	private readonly Func<DiagnosticListener, bool> _diagnosticSourceFilter;
-	private readonly Func<string, object?, object?, bool>? _isEnabledFilter;
-	private readonly Action<string, string, Exception> _logUnknownException;
+	private readonly List<IDisposable> _listenerSubscriptions = new();
 	private long _disposed;
 	private IDisposable? _allSourcesSubscription;
 
@@ -19,18 +20,6 @@ public sealed class CustomDiagnosticSourceSubscriber : IDisposable, IObserver<Di
 	{
 	}
 
-	public CustomDiagnosticSourceSubscriber(Func<string, ListenerHandler> handlerFactory,
-		Func<DiagnosticListener, bool> diagnosticSourceFilter,
-		Func<string, object?, object?, bool>? isEnabledFilter,
-		Action<string, string, Exception> logUnknownException)
-	{
-		_listenerSubscriptions = new List<IDisposable>();
-		_handlerFactory = handlerFactory;
-		_diagnosticSourceFilter = diagnosticSourceFilter;
-		_isEnabledFilter = isEnabledFilter;
-		_logUnknownException = logUnknownException;
-	}
-
 	public void Subscribe()
 	{
 		_allSourcesSubscription ??= DiagnosticListener.AllListeners.Subscribe(this);
@@ -39,11 +28,11 @@ public sealed class CustomDiagnosticSourceSubscriber : IDisposable, IObserver<Di
 	public void OnNext(DiagnosticListener value)
 	{
 		if ((Interlocked.Read(ref _disposed) == 0) &&
-		    _diagnosticSourceFilter(value))
+		    diagnosticSourceFilter(value))
 		{
-			var handler = _handlerFactory(value.Name);
-			var listener = new DiagnosticSourceListener(handler, _logUnknownException);
-			var subscription = _isEnabledFilter == null ? value.Subscribe(listener) : value.Subscribe(listener, _isEnabledFilter);
+			var handler = handlerFactory(value.Name);
+			var listener = new DiagnosticSourceListener(handler, logUnknownException);
+			var subscription = isEnabledFilter == null ? value.Subscribe(listener) : value.Subscribe(listener, isEnabledFilter);
 
 			lock (_listenerSubscriptions)
 			{

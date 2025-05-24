@@ -6,19 +6,11 @@ using OpenTelemetry.Instrumentation.BackgroundService;
 
 namespace OpenTelemetry.WebSocket.Client;
 
-internal sealed class WebSocketWorker : WorkerService
+internal sealed class WebSocketWorker(ILogger<WebSocketWorker> logger, ICountiesClient countiesClient) : WorkerService(new SchedulerOptions(10))
 {
-	private readonly ILogger<WebSocketWorker> _logger;
-	private readonly ICountiesClient _countiesClient;
 	private ClientWebSocket? _clientWebSocket;
 
 	private static readonly string Url = $"ws://{Environment.GetEnvironmentVariable("WebSocket_Server_Domain")}/ws";
-
-	public WebSocketWorker(ILogger<WebSocketWorker> logger, ICountiesClient countiesClient) : base(new SchedulerOptions(10))
-	{
-		_logger = logger;
-		_countiesClient = countiesClient;
-	}
 
 	protected override async Task Execute(CancellationToken stoppingToken)
 	{
@@ -36,23 +28,23 @@ internal sealed class WebSocketWorker : WorkerService
 				var randomInt = Random.Shared.Next(0, 1000);
 				await _clientWebSocket.SendAsync(Encoding.UTF8.GetBytes(randomInt.ToString()), WebSocketMessageType.Text, endOfMessage: true, stoppingToken);
 
-				_logger.LogInformation("Sent {RandomInt}", randomInt);
+				logger.LogInformation("Sent {RandomInt}", randomInt);
 
 				var message = await MessageReadAsync(_clientWebSocket, buffer);
 				if (message.Type is WebSocketMessageType.Close)
 				{
-					_logger.LogInformation("Received close message");
+					logger.LogInformation("Received close message");
 					break;
 				}
 
 				var incomingMessage = Encoding.UTF8.GetString(message.Data);
 				int.TryParse(incomingMessage, out var returnedRandomInt);
 
-				_logger.LogInformation("Received {RandomInt}", returnedRandomInt);
+				logger.LogInformation("Received {RandomInt}", returnedRandomInt);
 
-				var country = await _countiesClient.GetCountry(stoppingToken);
+				var country = await countiesClient.GetCountry(stoppingToken);
 
-				_logger.LogInformation("Json content: {Json}", country);
+				logger.LogInformation("Json content: {Json}", country);
 
 				counter++;
 				if (counter == 5)
@@ -70,7 +62,7 @@ internal sealed class WebSocketWorker : WorkerService
 			                                    }
 		                                    })
 		{
-			_logger.LogInformation("Cannot connect to server");
+			logger.LogInformation("Cannot connect to server");
 		}
 		finally
 		{

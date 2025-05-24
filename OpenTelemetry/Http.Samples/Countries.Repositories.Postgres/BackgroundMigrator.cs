@@ -4,18 +4,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Countries.Repositories.Postgres;
 
-internal sealed class BackgroundMigrator : BackgroundService
+internal sealed class BackgroundMigrator(IServiceProvider serviceProvider) : BackgroundService
 {
-	private readonly IServiceProvider _serviceProvider;
-
-	public BackgroundMigrator(IServiceProvider serviceProvider)
-	{
-		_serviceProvider = serviceProvider;
-	}
-
 	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 	{
-		using var scope = _serviceProvider.CreateScope();
+		using var scope = serviceProvider.CreateScope();
 		var migrator = scope.ServiceProvider.GetRequiredService<IMigrator>();
 		var logger = scope.ServiceProvider.GetRequiredService<ILogger<BackgroundMigrator>>();
 

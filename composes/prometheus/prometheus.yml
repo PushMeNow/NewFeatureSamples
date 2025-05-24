@@ -1,16 +1,6 @@
 global:
-  scrape_interval:     30s
-  evaluation_interval: 30s
+  scrape_interval:     10s
+  evaluation_interval: 10s
 
-alerting:
-  alertmanagers:
-  - static_configs:
-    - targets:
-
-rule_files:
-
-scrape_configs:
-  # scrap metrics from http server only, if you need more you can copy-paste for your services
-  - job_name: 'server'
-    static_configs:
-      - targets: ['host.docker.internal:5106']
+remote_write:
+    - url: "http://0.0.0.0:9090/api/v1/write"

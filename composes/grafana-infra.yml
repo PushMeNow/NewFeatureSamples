@@ -2,66 +2,61 @@ name: grafana-infra
 
 networks:
     common-network:
-    promtail-loki:
-        internal: true
-    grafana-loki:
-        internal: true
-    grafana-prometheus:
-        internal: true
-    prometheus-cadvisor:
-        internal: true
-    grafana-tempo:
-        internal: true
-    prometheus-tempo:
+    grafana-internal:
         internal: true
 
 services:
+    # service to collect all telemetry in one place by one specification and then send them to other services
+    otel-collector:
+        image: otel/opentelemetry-collector:latest
+        container_name: otel-collector
+        command: [ "--config=/etc/otel-collector-config.yaml" ]
+        volumes:
+            - ./otel-collector/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+        ports:
+            - "4317:4317" #gRPC port to receive OTPL data
+        networks:
+            - grafana-internal
+            - common-network
+        depends_on:
+            - grafana
+
     # service to store logs
     loki:
-        image: grafana/loki
+        image: grafana/loki:latest
         container_name: loki
-        command: -config.file=/etc/loki/local-config.yaml
-        networks:
-            - grafana-loki
-            - promtail-loki
-
-    # service to scrap logs from external services
-    promtail:
-        depends_on:
-            - loki
-        image: grafana/promtail
-        container_name: promtail
+        ports:
+            - "3100:3100" # public port
         volumes:
-            - ./logs:/var/log
-            - ./promtail/local-config.yaml:/etc/promtail/local-config.yaml
-        command: "-config.file=/etc/promtail/local-config.yaml"
+            - ./loki/loki-config.yaml:/etc/loki/loki-config.yaml
+        command: -config.file=/etc/loki/loki-config.yaml
         networks:
-            - promtail-loki
+            - grafana-internal
 
     # service to scrap and store metrics of external services
     prometheus:
-        image: prom/prometheus
+        image: prom/prometheus:latest
         container_name: prometheus
         ports:
             - "9090:9090"
         volumes:
             - ./prometheus:/app.cfg
         networks:
-            - common-network
-            - prometheus-cadvisor
-            - grafana-prometheus
-            - prometheus-tempo
+            - grafana-internal
         command:
             --config.file=/app.cfg/prometheus.yml
             --storage.tsdb.path=/prometheus
             --web.console.libraries=/usr/share/prometheus/console_libraries
             --web.console.templates=/usr/share/prometheus/consoles
+            --web.enable-remote-write-receiver
 
     # service to visualize, analyze and manage metrics, traces and logs
     grafana:
         depends_on:
             - loki
-        image: grafana/grafana
+            - tempo
+            - prometheus
+        image: grafana/grafana:latest
         container_name: grafana
         ports:
             - "3000:3000"
@@ -72,10 +67,8 @@ services:
             - ./grafana/provisioning:/etc/grafana/provisioning
             - ./grafana/dashboards:/etc/grafana/dashboards
         networks:
+            - grafana-internal
             - common-network
-            - grafana-loki
-            - grafana-prometheus
-            - grafana-tempo
 
     init: # init compose for Tempo
         image: &tempoImage grafana/tempo:latest
@@ -101,6 +94,4 @@ services:
         depends_on:
             - init
         networks:
-            - grafana-tempo
-            - prometheus-tempo
-            - common-network
+            - grafana-internal

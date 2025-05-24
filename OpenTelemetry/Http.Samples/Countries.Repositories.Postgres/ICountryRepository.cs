@@ -10,16 +10,9 @@ public interface ICountryRepository
 	Task<CountryHistoryRecord> WriteHistory(CountryHistoryRecord countryHistoryRecord);
 }
 
-internal sealed class CountryRepository : ICountryRepository
+internal sealed class CountryRepository(CountriesDbContext context) : ICountryRepository
 {
-	private readonly CountriesDbContext _context;
-	private readonly DbSet<CountryHistoryRecord> _set;
-
-	public CountryRepository(CountriesDbContext context)
-	{
-		_context = context;
-		_set = context.Set<CountryHistoryRecord>();
-	}
+	private readonly DbSet<CountryHistoryRecord> _set = context.Set<CountryHistoryRecord>();
 
 	public async Task<IReadOnlyCollection<CountryHistoryRecord>> GetHistory(string ip, string? countryCode)
 	{
@@ -31,7 +24,7 @@ internal sealed class CountryRepository : ICountryRepository
 		countryHistoryRecord.CreatedDate = DateTime.UtcNow;
 
 		await _set.AddAsync(countryHistoryRecord);
-		await _context.SaveChangesAsync();
+		await context.SaveChangesAsync();
 
 		return countryHistoryRecord;
 	}
