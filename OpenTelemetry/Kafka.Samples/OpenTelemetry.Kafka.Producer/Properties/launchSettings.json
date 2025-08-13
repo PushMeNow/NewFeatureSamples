@@ -1,0 +1,15 @@
+﻿{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "OpenTelemetry.Kafka.Producer": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5085",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+		  "OTEL_SERVICE_NAME": "kafka-producer"
+      }
+    }
+  }
+}

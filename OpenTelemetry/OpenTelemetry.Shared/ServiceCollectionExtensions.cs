@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -19,7 +20,7 @@ public static class ServiceCollectionExtensions
 		builder.WithMetrics(providerBuilder =>
 		                    {
 			                    providerBuilder.AddOtlpExporter();
-			                    providerBuilder.AddConsoleExporter();
+			                    // providerBuilder.AddConsoleExporter();
 			                    providerBuilder.AddAspNetCoreInstrumentation();
 			                    providerBuilder.AddHttpClientInstrumentation();
 			                    providerBuilder.AddRuntimeInstrumentation();
@@ -34,7 +35,7 @@ public static class ServiceCollectionExtensions
 		builder.WithLogging(providerBuilder =>
 		                    {
 			                    providerBuilder.AddOtlpExporter();
-			                    providerBuilder.AddConsoleExporter();
+			                    // providerBuilder.AddConsoleExporter();
 		                    });
 		return builder;
 	}
@@ -44,10 +45,7 @@ public static class ServiceCollectionExtensions
 		builder.WithTracing(providerBuilder =>
 		                    {
 			                    // trace exporter to otpl server (example grafana-tempo)
-			                    // config.AddOtlpExporter(q => q.Endpoint = new Uri("http://localhost:4320"));
 			                    providerBuilder.AddOtlpExporter();
-			                    // trace exporter to console
-			                    // config.AddConsoleExporter();
 			                    // register traces for ASP.NET Core events
 			                    providerBuilder.AddAspNetCoreInstrumentation(options =>
 			                                                                 {
@@ -65,8 +63,8 @@ public static class ServiceCollectionExtensions
 				                                                                 };
 			                                                                 });
 
-			                    // register traces for EF core
-			                    providerBuilder.AddEntityFrameworkCoreInstrumentation(options => { options.SetDbStatementForText = true; });
+			                    // register traces for Postgres
+			                    providerBuilder.AddNpgsql();
 		                    });
 
 		return builder;

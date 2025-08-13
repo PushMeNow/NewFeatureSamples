@@ -8,10 +8,8 @@ namespace OpenTelemetry.Http.Samples.Controllers;
 public sealed class CountryController(ICountiesClient countiesClient) : ControllerBase
 {
 	[HttpGet]
-	public async Task<CountryResponse?> GetCountry()
+	public Task<CountryResponse?> GetCountry()
 	{
-		var countryResponse = await countiesClient.GetCountry();
-
-		return countryResponse;
+		return countiesClient.GetCountry();
 	}
 }

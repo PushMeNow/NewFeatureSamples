@@ -1,24 +1,25 @@
 ﻿using System.Diagnostics;
-using OpenTelemetry.Trace;
+using Microsoft.Extensions.DependencyInjection;
 using Exception = System.Exception;
 
 namespace OpenTelemetry.Instrumentation.BackgroundService;
 
 public abstract class WorkerService : Microsoft.Extensions.Hosting.BackgroundService
 {
+	private readonly IServiceProvider _serviceProvider;
 	private readonly SchedulerOptions? _schedulerOptions;
-	protected Activity? CurrentActivity;
 
-	protected WorkerService()
+	protected WorkerService(IServiceProvider serviceProvider)
 	{
+		_serviceProvider = serviceProvider;
 	}
 
-	protected WorkerService(SchedulerOptions schedulerOptions)
+	protected WorkerService(IServiceProvider serviceProvider, SchedulerOptions schedulerOptions) : this(serviceProvider)
 	{
 		_schedulerOptions = schedulerOptions;
 	}
 
-	public virtual Task Start(CancellationToken cancellationToken)
+	protected virtual Task Start(CancellationToken cancellationToken)
 	{
 		return Task.CompletedTask;
 	}
@@ -29,42 +30,35 @@ public abstract class WorkerService : Microsoft.Extensions.Hosting.BackgroundSer
 		await base.StartAsync(cancellationToken);
 	}
 
-	protected abstract Task Execute(CancellationToken stoppingToken);
+	protected abstract Task Execute(IServiceProvider scope);
 
-	protected sealed override async Task ExecuteAsync(CancellationToken stoppingToken)
+	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 	{
-		do
+		while (stoppingToken.IsCancellationRequested == false)
 		{
-			CurrentActivity = BackgroundServiceActivitySource.ActivitySource.StartActivity(GetType().Name);
+			using var activity = BackgroundServiceActivitySource.ActivitySource.StartActivity(GetType().Name);
+			using var scope = _serviceProvider.CreateScope();
 
 			try
 			{
 				// here need setup span attributes
-				CurrentActivity?.AddTag("job.type", "worker");
+				activity?.AddTag("job.type", "worker");
 
-				await Execute(stoppingToken);
+				await Execute(scope.ServiceProvider);
 
-				CurrentActivity?.SetStatus(ActivityStatusCode.Ok);
+				activity?.SetStatus(ActivityStatusCode.Ok);
 			}
 			catch (Exception ex)
 			{
-				CurrentActivity?.SetStatus(ActivityStatusCode.Error, ex.Message);
-				CurrentActivity?.RecordException(ex);
-			}
-			finally
-			{
-				CurrentActivity?.Dispose();
-				CurrentActivity = null;
+				activity?.SetStatus(ActivityStatusCode.Error, ex.Message);
+				activity?.AddException(ex);
 			}
 
-			if (_schedulerOptions is not null)
-			{
-				await Task.Delay(new TimeSpan(days: 0, hours: 0, minutes: 0, seconds: _schedulerOptions.IntervalSec).Milliseconds, stoppingToken);
-			}
-		} while (_schedulerOptions != null && stoppingToken.IsCancellationRequested == false);
+			await DelayOnDemand(stoppingToken);
+		}
 	}
 
-	public virtual Task Stop(CancellationToken cancellationToken)
+	protected virtual Task Stop(CancellationToken cancellationToken)
 	{
 		return Task.CompletedTask;
 	}
@@ -73,6 +67,14 @@ public abstract class WorkerService : Microsoft.Extensions.Hosting.BackgroundSer
 	{
 		await Stop(cancellationToken);
 		await base.StopAsync(cancellationToken);
+	}
+
+	private async Task DelayOnDemand(CancellationToken stoppingToken)
+	{
+		if (_schedulerOptions is not null)
+		{
+			await Task.Delay(new TimeSpan(days: 0, hours: 0, minutes: 0, seconds: _schedulerOptions.IntervalSec).Milliseconds, stoppingToken);
+		}
 	}
 
 	public sealed record SchedulerOptions(int IntervalSec);

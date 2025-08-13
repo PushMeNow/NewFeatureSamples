@@ -4,17 +4,15 @@ using OpenTelemetry.Http.Samples.Domain;
 
 namespace OpenTelemetry.CronJob.Sample.Jobs;
 
-internal sealed class CountryReceiver(IServiceProvider serviceProvider) : Instrumentation.BackgroundService.WorkerService
+internal sealed class CountryReceiver(IServiceProvider serviceProvider) : Instrumentation.BackgroundService.WorkerService(serviceProvider)
 {
-	protected override async Task Execute(CancellationToken stoppingToken)
+	protected override async Task Execute(IServiceProvider scope)
 	{
-		using var scope = serviceProvider.CreateScope();
+		var countiesClient = scope.GetRequiredService<ICountiesClient>();
+		var logger = scope.GetRequiredService<ILogger<CountryReceiver>>();
+		var httpSamplesClient = scope.GetRequiredService<IHttpSamplesClient>();
 
-		var countiesClient = scope.ServiceProvider.GetRequiredService<ICountiesClient>();
-		var logger = scope.ServiceProvider.GetRequiredService<ILogger<CountryReceiver>>();
-		var httpSamplesClient = scope.ServiceProvider.GetRequiredService<IHttpSamplesClient>();
-
-		var country = await countiesClient.GetCountry(stoppingToken);
+		var country = await countiesClient.GetCountry();
 
 		var countryHistoryRecord = new CountryHistoryRecordRequest(country!.Ip, country.CountryCode);
 		await httpSamplesClient.WriteHistory(countryHistoryRecord);

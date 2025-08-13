@@ -6,19 +6,22 @@ using OpenTelemetry.Instrumentation.BackgroundService;
 
 namespace OpenTelemetry.WebSocket.Client;
 
-internal sealed class WebSocketWorker(ILogger<WebSocketWorker> logger, ICountiesClient countiesClient) : WorkerService(new SchedulerOptions(10))
+internal sealed class WebSocketWorker(
+	ILogger<WebSocketWorker> logger,
+	ICountiesClient countiesClient,
+	IServiceProvider serviceProvider) : WorkerService(serviceProvider, new SchedulerOptions(10))
 {
 	private ClientWebSocket? _clientWebSocket;
 
 	private static readonly string Url = $"ws://{Environment.GetEnvironmentVariable("WebSocket_Server_Domain")}/ws";
 
-	protected override async Task Execute(CancellationToken stoppingToken)
+	protected override async Task Execute(IServiceProvider scope)
 	{
 		try
 		{
 			_clientWebSocket ??= new ClientWebSocket();
 			_clientWebSocket.Options.KeepAliveInterval = TimeSpan.FromSeconds(30);
-			await _clientWebSocket.ConnectAsync(new Uri(Url), stoppingToken);
+			await _clientWebSocket.ConnectAsync(new Uri(Url), CancellationToken.None);
 
 			var counter = 0;
 
@@ -26,7 +29,10 @@ internal sealed class WebSocketWorker(ILogger<WebSocketWorker> logger, ICounties
 			while (_clientWebSocket.State is WebSocketState.Open)
 			{
 				var randomInt = Random.Shared.Next(0, 1000);
-				await _clientWebSocket.SendAsync(Encoding.UTF8.GetBytes(randomInt.ToString()), WebSocketMessageType.Text, endOfMessage: true, stoppingToken);
+				await _clientWebSocket.SendAsync(Encoding.UTF8.GetBytes(randomInt.ToString()),
+					WebSocketMessageType.Text,
+					endOfMessage: true,
+					CancellationToken.None);
 
 				logger.LogInformation("Sent {RandomInt}", randomInt);
 
@@ -42,7 +48,7 @@ internal sealed class WebSocketWorker(ILogger<WebSocketWorker> logger, ICounties
 
 				logger.LogInformation("Received {RandomInt}", returnedRandomInt);
 
-				var country = await countiesClient.GetCountry(stoppingToken);
+				var country = await countiesClient.GetCountry();
 
 				logger.LogInformation("Json content: {Json}", country);
 
@@ -73,7 +79,7 @@ internal sealed class WebSocketWorker(ILogger<WebSocketWorker> logger, ICounties
 
 	public override void Dispose()
 	{
-		_clientWebSocket.Dispose();
+		_clientWebSocket?.Dispose();
 		base.Dispose();
 	}
 

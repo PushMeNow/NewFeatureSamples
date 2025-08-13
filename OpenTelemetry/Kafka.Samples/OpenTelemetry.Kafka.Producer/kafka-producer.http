@@ -1,0 +1,27 @@
+﻿### Get posts
+
+GET http://localhost:5085/api/posts
+
+#### Create post
+
+POST http://localhost:5085/api/posts
+Content-Type: application/json
+
+{
+    "title": "Kafka investigation",
+    "content": "It is kafka create endpoint call"
+}
+
+#### Update post
+
+PUT http://localhost:5085/api/posts/0198705e-8ddf-75e8-b5a8-422f80821e24
+Content-Type: application/json
+
+{
+    "title": "Kafka investigation",
+    "content": "It is kafka update endpoint call"
+}
+
+#### Delete post
+
+DELETE http://localhost:5085/api/posts/01987039-eff1-7d4d-851d-506d99a1fa95

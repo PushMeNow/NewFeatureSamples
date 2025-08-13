@@ -13,3 +13,12 @@ grafana-infra-up:
 
 grafana-infra-down:
 	docker-compose -f grafana-infra.yml down
+
+kafka-infra-build:
+	docker-compose -f kafka-infra.yml build
+
+kafka-infra-up:
+	docker-compose -f kafka-infra.yml up -d
+
+kafka-infra-down:
+	docker-compose -f kafka-infra.yml down
