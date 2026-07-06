@@ -1,0 +1,44 @@
+﻿name: common-env
+
+networks:
+  common-network:
+
+services:
+#  azurite: # S3 storage for Azure infrastructure
+#    image: mcr.microsoft.com/azure-storage/azurite:latest
+#    container_name: azurite
+#    restart: unless-stopped
+#    volumes:
+#      - ./azurite:/azurite
+#    ports:
+#      - "10000:10000" # blob storage
+#    networks:
+#      - common-network
+
+  minio: # Open source S3 storage local debug. Alternative for AWS object storage
+    image: quay.io/minio/minio:RELEASE.2025-04-22T22-12-26Z
+    container_name: minio
+    restart: unless-stopped
+    environment:
+      - MINIO_ROOT_USER=admin # user for login by UI
+      - MINIO_ROOT_PASSWORD=P@ssw0rd1! # password for login by UI
+    ports:
+      - "9000:9000" # port for public api
+      - "9001:9001" # port for minIO UI
+    command: server --console-address ":9001" /data
+    networks:
+      - common-network
+
+  buckets-creator:
+    image: quay.io/minio/mc:RELEASE.2025-03-12T17-29-24Z
+    depends_on:
+      - minio
+    restart: on-failure
+    network_mode: service:minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      /usr/bin/mc alias set s3 http://minio:9000 admin P@ssw0rd1!;
+      /usr/bin/mc mb s3/tempo;
+      exit 0;
+      "
