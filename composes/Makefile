@@ -2,6 +2,7 @@
 kafka_compose := kafka-compose.yml
 s3_compose := s3-compose.yml
 redis_compose := redis-compose.yaml
+postgres_compose := postgres-db.yaml
 
 help: ## show command list
 	@echo "Usage: make <command>"
@@ -55,6 +56,14 @@ redis-up:
 
 redis-down:
 	docker-compose -f ${redis_compose} down
+
+##
+
+postgres-up:
+	docker-compose -f ${postgres_compose} up -d
+
+postgres-down:
+	doccker-compose -f ${postgres_compose} down
 
 ##
 work-infra-build: kafka-build redis-build

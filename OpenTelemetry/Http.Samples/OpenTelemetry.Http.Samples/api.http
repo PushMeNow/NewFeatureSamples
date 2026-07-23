@@ -1,0 +1,22 @@
+﻿### Global Variables
+@base_address = http://localhost:5106
+
+### Get Country
+GET {{base_address}}/api/countries
+
+> {%
+    client.global.set("country_ip", response.body.ip);
+    client.global.set("country_code", response.body.countryCode)
+%}
+
+### Write History
+POST {{base_address}}/api/countries-history
+Content-Type: application/json
+
+{
+    "ip": "{{country_ip}}",
+    "countryCode": null
+}
+
+### Get History
+GET {{base_address}}/api/countries-history?ip={{country_ip}}

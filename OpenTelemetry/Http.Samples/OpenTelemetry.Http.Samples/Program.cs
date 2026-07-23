@@ -4,6 +4,8 @@ using OpenTelemetry.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging.ClearProviders();
+
 var services = builder.Services;
 services.AddControllers();
 services.AddEndpointsApiExplorer();
@@ -13,7 +15,7 @@ services.AddOpenTelemetryForCurrentApplication().WithHttpServerTracing().WithHtt
 
 services.AddCountryRepositories(builder.Configuration.GetConnectionString("DefaultConnection")!).AddMigrator();
 services.AddCountiesClient();
-
+services.AddSerilogLogger(builder.Configuration);
 
 var app = builder.Build();
 
